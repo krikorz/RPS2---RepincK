@@ -1,14 +1,25 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-<title>My first flask project!</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=<device-width>, initial-scale=1.0">
+    <title>Main</title>
 </head>
+	{% if podatki['uspeh'] %}
+	<i>Uspešno sem se povezal na database.</i>
+	{% else %}
+	<i><b>Neuspešno</b> sem se povezal na database.</i>
+	{% endif %}
 <body>
-
-<h1>My First Template</h1>
-<p>Hello 2.Ri! ♥</p>
-
-<img src="{{url_for('static', filename='logo.svg')}}" alt="my logo" width="300" height="300">
-
+    <form action="/" method="post">
+	<label for="visina">Višina (cm): </label><br>
+	<input type="text" id="visina" name="visina" value="{{podatki['visina']}}"><br>
+	<label for="teza">Teza (kg):</label><br>
+	<input type="text" id="teza" name="teza" value="{{podatki['teza']}}">
+	 <input type="submit" value="IZRAČUNAJ">
+	</form>
+	{% if podatki['itm'] %}
+	<i>Vaš ITM je {{podatki["itm"]}}</i>
+	{% endif %}
 </body>
 </html>
