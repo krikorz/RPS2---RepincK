@@ -1,9 +1,10 @@
-# LIBRARIES
+#System libaries
 from flask import Flask
 from flask import render_template
 from flask import request
 
-# MY LIBRARIES
+#my libaries
+from module import dbConfig
 from module import dbLogic
 
 app = Flask(__name__)
@@ -17,41 +18,30 @@ APP_PORT = 80
 def index():
     data = {
         "uspeh" : False,
-        "itm" : None,
-        "teza": "",
-        "visina": ""
+        "itm": None,
+        "teza": None,
+        "visina": None
     }
+    data["uspeh"] = dbLogic.getAll()
     if request.method == "POST":
         data["teza"] = request.form.get("teza")
         data["visina"] = request.form.get("visina")
         
-        if data["teza"] and data["visina"]:
+        if data["visina"] and data["teza"]:
             data["itm"] = izracunaj_itm(float(data["visina"]), float(data["teza"]))
-            dbLogic.insertData(float(data["visina"]), float(data["teza"]), data["itm"])
         print(data)
     
     return render_template("index.html", podatki = data)
-
-@app.route("/dnevnik", methods = ["GET", "POST"])
-def dnevnik():
-    data = {
-        "seznam" : [],
-    }
-    data["seznam"] = dbLogic.getAll()
-    return render_template("dnevnik.html", podatki = data)
     
-# NOVO !!!
-@app.route("/izbrisi/<sID>")
-def dnevnik_izbirsi(sID):
-    ID = int(sID)
-    dbLogic.deleteItm(ID)
-    return redirect("/dnevnik")
-
 def izracunaj_itm(visinaCm, tezaKg):
     itm = tezaKg / (visinaCm/100) ** 2
     return itm
 
+@app.route("/dnevnik", methods = ["GET", "POST"])
+def dnevnik():
+    data ={}
+    data["seznam"] = dblogic.getAll()
+    return render_template("dnevnik.html", podatki =data)
 # ZAGON APLIKACIJE
 app.config["DEBUG"] = True
 app.run(host = APP_ADDRESS, port = APP_PORT)
-
