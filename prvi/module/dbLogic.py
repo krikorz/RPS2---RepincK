@@ -1,36 +1,26 @@
 from module import dbConfig
-from module.objects import DnevnikObj
 
-def getAll():
-    
-    sql = """
-    SELECT id, datumcas, visina, teza, itm FROM dnevnik;
-    """.format()
-    
+def getAll(param = ""):
     try:
         mydb = dbConfig.dbConnect()
         cursor = mydb.cursor()
-        cursor.execute(sql)
-        result = cursor.fetchall()
-        rtn = []
-        for r in result:
-            obj = DnevnikObj(r[0], r[1], r[2], r[3], r[4])
-            rtn.append(obj)
-        return rtn
-    except:
-        return []
-    finally:
+        
         cursor.close()
         mydb.close()
+        return True
         
-def insertData(visina, teza, itm):
-    
+    except:
+        return False
+        
+    finally:
+        pass
+
+
+def insertData(visina,teza,itm):
     sql = """
-    INSERT INTO dnevnik (datumcas, visina, teza, itm)
-    VALUES (NOW(), {}, {}, {});
-    """.format(visina, teza, itm)
-    vrniID = -1
-    
+    INSERT INTO dnevnik (datumcas,visina,teza,itm)
+    VALUES (now(), {},{},{});
+    """.format(visina,teza,itm)
     try:
         mydb = dbConfig.dbConnect()
         cursor = mydb.cursor()
@@ -39,8 +29,7 @@ def insertData(visina, teza, itm):
         vrniID = cursor.lastrowid
         return vrniID
     except:
-        mydb.rollback()
-        return vrniID
+        return -1
     finally:
         cursor.close()
         mydb.close()
